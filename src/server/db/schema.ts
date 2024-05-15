@@ -18,7 +18,7 @@ import {
  */
 export const createTable = pgTableCreator((name) => `weight-track_${name}`);
 
-export const posts = createTable(
+export const routines = createTable(
   "routine",
   {
     id: serial("id").primaryKey(),

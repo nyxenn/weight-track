@@ -1,9 +1,12 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { posts } from "~/server/db/schema";
+import { routines } from "~/server/db/schema";
 
-export const postRouter = createTRPCRouter({
+import "server-only";
+import { auth } from "@clerk/nextjs/server";
+
+export const routineRouter = createTRPCRouter({
   hello: publicProcedure
     .input(z.object({ text: z.string() }))
     .query(({ input }) => {
@@ -15,17 +18,18 @@ export const postRouter = createTRPCRouter({
   create: publicProcedure
     .input(z.object({ name: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
-      // simulate a slow db call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const user = auth();
+      if (!user?.userId) throw new Error("Unauthorized");
 
-      await ctx.db.insert(posts).values({
+      await ctx.db.insert(routines).values({
         name: input.name,
+        user_id: user.userId,
       });
     }),
 
   getLatest: publicProcedure.query(({ ctx }) => {
-    return ctx.db.query.posts.findFirst({
-      orderBy: (posts, { desc }) => [desc(posts.createdAt)],
+    return ctx.db.query.routines.findFirst({
+      orderBy: (routines, { desc }) => [desc(routines.createdAt)],
     });
   }),
 });

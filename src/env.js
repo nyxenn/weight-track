@@ -23,6 +23,9 @@ export const env = createEnv({
 
     // Clerk
     CLERK_SECRET_KEY: z.string(),
+
+    // Sentry
+    SENTRY_AUTH_TOKEN: z.string(),
   },
 
   /**
@@ -56,6 +59,9 @@ export const env = createEnv({
 
     // Clerk
     CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
+
+    // Sentry
+    SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
