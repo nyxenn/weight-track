@@ -5,11 +5,11 @@ import { useState } from "react";
 
 import { api } from "~/trpc/react";
 
-export function CreatePost() {
+export function CreateRoutine() {
   const router = useRouter();
   const [name, setName] = useState("");
 
-  const createPost = api.post.create.useMutation({
+  const createRoutine = api.routine.create.useMutation({
     onSuccess: () => {
       router.refresh();
       setName("");
@@ -20,7 +20,7 @@ export function CreatePost() {
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        createPost.mutate({ name });
+        createRoutine.mutate({ name });
       }}
       className="flex flex-col gap-2"
     >
@@ -34,9 +34,9 @@ export function CreatePost() {
       <button
         type="submit"
         className="rounded-full bg-white/10 px-10 py-3 font-semibold transition hover:bg-white/20"
-        disabled={createPost.isPending}
+        disabled={createRoutine.isPending}
       >
-        {createPost.isPending ? "Submitting..." : "Submit"}
+        {createRoutine.isPending ? "Submitting..." : "Submit"}
       </button>
     </form>
   );
