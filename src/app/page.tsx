@@ -1,3 +1,5 @@
+import "server-only";
+
 import Link from "next/link";
 
 import { CreatePost } from "~/app/_components/create-post";
