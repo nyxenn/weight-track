@@ -19,10 +19,13 @@ import {
 export const createTable = pgTableCreator((name) => `weight-track_${name}`);
 
 export const posts = createTable(
-  "post",
+  "routine",
   {
     id: serial("id").primaryKey(),
-    name: varchar("name", { length: 256 }),
+    name: varchar("name", { length: 128 }),
+
+    user_id: varchar("user_id", { length: 256 }).notNull(),
+
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -30,5 +33,5 @@ export const posts = createTable(
   },
   (example) => ({
     nameIndex: index("name_idx").on(example.name),
-  })
+  }),
 );
