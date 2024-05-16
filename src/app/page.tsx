@@ -4,12 +4,37 @@ import Link from "next/link";
 
 import { CreateRoutine } from "~/app/_components/create-routine";
 import { api } from "~/trpc/server";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
 
 export default async function Home() {
   const hello = await api.routine.hello({ text: "from tRPC" });
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
+    <main className="flex min-h-screen flex-col items-center justify-center gap-8">
+      <div className="w-8/12">
+        <span>Next Up</span>
+        <Card>
+          <CardHeader>
+            <CardTitle>Temp 1</CardTitle>
+            <CardDescription>
+              <div className="flex flex-row items-end justify-between">
+                <div>Exercise 1, Exercise 2, ...</div>
+
+                <div>
+                  <div>Previous</div>
+                  <div>01/01/2024</div>
+                </div>
+              </div>
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+
       <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
         <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
           Create <span className="text-[hsl(280,100%,70%)]">T3</span> App

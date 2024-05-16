@@ -1,11 +1,12 @@
 import "~/styles/globals.css";
 
 import { GeistSans } from "geist/font/sans";
-
-import { TRPCReactProvider } from "~/trpc/react";
 import { ClerkProvider } from "@clerk/nextjs";
-import TopNav from "./_components/topnav";
 import { Toaster } from "sonner";
+
+import TopNav from "./_components/topnav";
+import { TRPCReactProvider } from "~/trpc/react";
+import { Providers } from "./providers";
 
 export const metadata = {
   title: "Create T3 App",
@@ -20,16 +21,22 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en" className={`${GeistSans.variable}`}>
-        <body className="dark">
-          <div className="grid h-screen grid-rows-[auto,1fr]">
-            <TopNav />
-            <TRPCReactProvider>
-              <main className="overflow-y-scroll">{children}</main>
-            </TRPCReactProvider>
-          </div>
+      <html
+        lang="en"
+        className={`${GeistSans.variable}`}
+        suppressHydrationWarning
+      >
+        <body>
+          <Providers>
+            <div className="grid h-screen grid-rows-[auto,1fr]">
+              <TopNav />
+              <TRPCReactProvider>
+                <main className="overflow-y-scroll">{children}</main>
+              </TRPCReactProvider>
+            </div>
 
-          <Toaster />
+            <Toaster />
+          </Providers>
         </body>
       </html>
     </ClerkProvider>
