@@ -2,37 +2,18 @@ import "server-only";
 
 import Link from "next/link";
 
-import { CreateRoutine } from "~/app/_components/create-routine";
+import { CreateWorkout } from "~/app/_components/create-workout";
 import { api } from "~/trpc/server";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
+import WorkoutCard from "./_components/workout-card";
 
 export default async function Home() {
-  const hello = await api.routine.hello({ text: "from tRPC" });
+  const hello = await api.workout.hello({ text: "from tRPC" });
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-8">
       <div className="w-8/12">
         <span>Next Up</span>
-        <Card>
-          <CardHeader>
-            <CardTitle>Temp 1</CardTitle>
-            <CardDescription>
-              <div className="flex flex-row items-end justify-between">
-                <div>Exercise 1, Exercise 2, ...</div>
-
-                <div>
-                  <div>Previous</div>
-                  <div>01/01/2024</div>
-                </div>
-              </div>
-            </CardDescription>
-          </CardHeader>
-        </Card>
+        <WorkoutCard></WorkoutCard>
       </div>
 
       <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
@@ -76,19 +57,19 @@ export default async function Home() {
 }
 
 async function CrudShowcase() {
-  const latestRoutine = await api.routine.getLatest();
+  const latestWorkout = await api.workout.getLatest();
 
   return (
     <div className="w-full max-w-xs">
-      {latestRoutine ? (
+      {latestWorkout ? (
         <p className="truncate">
-          Your most recent routine: {latestRoutine.name}
+          Your most recent workout: {latestWorkout.name}
         </p>
       ) : (
-        <p>You have no routines yet.</p>
+        <p>You have no workouts yet.</p>
       )}
 
-      <CreateRoutine />
+      <CreateWorkout />
     </div>
   );
 }

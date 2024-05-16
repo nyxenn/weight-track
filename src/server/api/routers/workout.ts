@@ -1,12 +1,12 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { routines } from "~/server/db/schema";
+import { workouts } from "~/server/db/workout";
 
 import "server-only";
 import { auth } from "@clerk/nextjs/server";
 
-export const routineRouter = createTRPCRouter({
+export const workoutRouter = createTRPCRouter({
   hello: publicProcedure
     .input(z.object({ text: z.string() }))
     .query(({ input }) => {
@@ -21,15 +21,14 @@ export const routineRouter = createTRPCRouter({
       const user = auth();
       if (!user?.userId) throw new Error("Unauthorized");
 
-      await ctx.db.insert(routines).values({
+      await ctx.db.insert(workouts).values({
         name: input.name,
-        user_id: user.userId,
       });
     }),
 
   getLatest: publicProcedure.query(({ ctx }) => {
-    return ctx.db.query.routines.findFirst({
-      orderBy: (routines, { desc }) => [desc(routines.createdAt)],
+    return ctx.db.query.workouts.findFirst({
+      orderBy: (workouts, { desc }) => [desc(workouts.createdAt)],
     });
   }),
 });

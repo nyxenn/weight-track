@@ -1,4 +1,4 @@
-import { routineRouter } from "~/server/api/routers/routine";
+import { workoutRouter } from "~/server/api/routers/workout";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
 /**
@@ -7,7 +7,7 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  routine: routineRouter,
+  workout: workoutRouter,
 });
 
 // export type definition of API
@@ -17,7 +17,7 @@ export type AppRouter = typeof appRouter;
  * Create a server-side caller for the tRPC API.
  * @example
  * const trpc = createCaller(createContext);
- * const res = await trpc.routine.all();
- *       ^? Routine[]
+ * const res = await trpc.workout.all();
+ *       ^? Workout[]
  */
 export const createCaller = createCallerFactory(appRouter);

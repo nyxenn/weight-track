@@ -1,37 +1,9 @@
-// Example model schema from the Drizzle docs
-// https://orm.drizzle.team/docs/sql-schema-declaration
+import * as workoutTables from "./workout";
+import * as exerciseTables from "./exercise";
 
-import { sql } from "drizzle-orm";
-import {
-  index,
-  pgTableCreator,
-  serial,
-  timestamp,
-  varchar,
-} from "drizzle-orm/pg-core";
+const schema = {
+  ...workoutTables,
+  ...exerciseTables,
+};
 
-/**
- * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
- * database instance for multiple projects.
- *
- * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
- */
-export const createTable = pgTableCreator((name) => `weight-track_${name}`);
-
-export const routines = createTable(
-  "routine",
-  {
-    id: serial("id").primaryKey(),
-    name: varchar("name", { length: 128 }),
-
-    user_id: varchar("user_id", { length: 256 }).notNull(),
-
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updatedAt", { withTimezone: true }),
-  },
-  (example) => ({
-    nameIndex: index("name_idx").on(example.name),
-  }),
-);
+export default schema;
