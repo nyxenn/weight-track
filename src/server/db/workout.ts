@@ -1,5 +1,11 @@
 import { relations, sql } from "drizzle-orm";
-import { serial, timestamp, varchar } from "drizzle-orm/pg-core";
+import {
+  integer,
+  primaryKey,
+  serial,
+  timestamp,
+  varchar,
+} from "drizzle-orm/pg-core";
 
 import { createTable } from "./utils";
 import { exerciseSupersets, exercises } from "./exercise";
@@ -15,8 +21,36 @@ export const workouts = createTable("workouts", {
 });
 
 export const workoutRelations = relations(workouts, ({ many }) => ({
-  exercises: many(exercises, { relationName: "exercises" }),
-  superset_exercises: many(exerciseSupersets, {
-    relationName: "superset_exercises",
-  }),
+  exercises: many(workoutExercises),
+  superset_exercises: many(exerciseSupersets),
 }));
+
+export const workoutExercises = createTable(
+  "workout_exercises",
+  {
+    // TODO: Composite PK doesn't seem to work, fallback to just id
+    id: serial("id").primaryKey(),
+    workout_id: integer("workout_id")
+      .notNull()
+      .references(() => workouts.id),
+    exercise_id: integer("exercise_id")
+      .notNull()
+      .references(() => exercises.id),
+  },
+  // TODO: Composite PK doesn't seem to work
+  // (t) => ({ pk: primaryKey({ columns: [t.workout_id, t.exercise_id] }) }),
+);
+
+export const workoutExerciseRelations = relations(
+  workoutExercises,
+  ({ one }) => ({
+    workout: one(workouts, {
+      fields: [workoutExercises.workout_id],
+      references: [workouts.id],
+    }),
+    exercise: one(exercises, {
+      fields: [workoutExercises.exercise_id],
+      references: [exercises.id],
+    }),
+  }),
+);
