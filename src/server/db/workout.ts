@@ -9,8 +9,9 @@ import {
 
 import { createTable } from "./utils";
 import { exerciseSupersets, exercises } from "./exercise";
+import { workoutSessions } from "./workout-session";
 
-export const workouts = createTable("workouts", {
+export const workouts = createTable("workout", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 128 }),
 
@@ -23,17 +24,18 @@ export const workouts = createTable("workouts", {
 export const workoutRelations = relations(workouts, ({ many }) => ({
   exercises: many(workoutExercises),
   superset_exercises: many(exerciseSupersets),
+  workout_sessions: many(workoutSessions),
 }));
 
 export const workoutExercises = createTable(
-  "workout_exercises",
+  "workout_exercise",
   {
     // TODO: Composite PK doesn't seem to work, fallback to just id
     id: serial("id").primaryKey(),
-    workout_id: integer("workout_id")
+    workoutId: integer("workout_id")
       .notNull()
       .references(() => workouts.id),
-    exercise_id: integer("exercise_id")
+    exerciseId: integer("exercise_id")
       .notNull()
       .references(() => exercises.id),
   },
@@ -45,11 +47,11 @@ export const workoutExerciseRelations = relations(
   workoutExercises,
   ({ one }) => ({
     workout: one(workouts, {
-      fields: [workoutExercises.workout_id],
+      fields: [workoutExercises.workoutId],
       references: [workouts.id],
     }),
     exercise: one(exercises, {
-      fields: [workoutExercises.exercise_id],
+      fields: [workoutExercises.exerciseId],
       references: [exercises.id],
     }),
   }),

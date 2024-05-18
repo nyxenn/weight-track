@@ -4,6 +4,7 @@ import postgres from "postgres";
 import { env } from "~/env";
 import * as workoutTables from "./workout";
 import * as exerciseTables from "./exercise";
+import * as sessionTables from "./workout-session";
 
 /**
  * Cache the database connection in development. This avoids creating a new connection on every HMR
@@ -19,6 +20,7 @@ if (env.NODE_ENV !== "production") globalForDb.conn = conn;
 const schema = {
   ...workoutTables,
   ...exerciseTables,
+  ...sessionTables,
 };
 
 export const db = drizzle(conn, { schema });

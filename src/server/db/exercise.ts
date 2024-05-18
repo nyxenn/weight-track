@@ -11,20 +11,21 @@ import {
 
 import { createTable } from "./utils";
 import { workoutExercises, workouts } from "./workout";
+import { workoutSessionExercises } from "./workout-session";
 
 /*************
  * EXERCISES *
  *************/
 export const exercises = createTable(
-  "exercises",
+  "exercise",
   {
     id: serial("id").primaryKey(),
     name: varchar("name", { length: 128 }),
-    rep_range_id: integer("rep_range_id")
+    repRangeId: integer("rep_range_id")
       .notNull()
       .references(() => repRanges.id),
 
-    user_id: varchar("user_id", { length: 256 }).notNull(),
+    userId: varchar("user_id", { length: 256 }).notNull(),
 
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
@@ -37,19 +38,20 @@ export const exercises = createTable(
 );
 
 export const exerciseRelations = relations(exercises, ({ one, many }) => ({
-  rep_range: one(repRanges, {
-    fields: [exercises.rep_range_id],
+  repRange: one(repRanges, {
+    fields: [exercises.repRangeId],
     references: [repRanges.id],
   }),
   workoutExercises: many(workoutExercises),
   exercise_b_supersets: many(exerciseSupersets, { relationName: "exercise_a" }),
   exercise_a_supersets: many(exerciseSupersets, { relationName: "exercise_b" }),
+  workoutSessionExercises: many(workoutSessionExercises),
 }));
 
 /**************
  * REP RANGES *
  **************/
-export const repRanges = createTable("rep_ranges", {
+export const repRanges = createTable("rep_range", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 128 }),
   min: smallint("min"),
@@ -64,11 +66,11 @@ export const repRangeRelations = relations(repRanges, ({ many }) => ({
  * SUPERSETS  *
  **************/
 export const exerciseSupersets = createTable(
-  "exercise_supersets",
+  "exercise_superset",
   {
     // TODO: Composite PK doesn't seem to work, fallback to just id
     id: serial("id").primaryKey(),
-    workout_id: integer("workout_id")
+    workoutId: integer("workout_id")
       .notNull()
       .references(() => workouts.id),
     exercise_a_id: integer("exercise_a_id")
@@ -90,15 +92,15 @@ export const exerciseSupersetRelations = relations(
   exerciseSupersets,
   ({ one }) => ({
     workout: one(workouts, {
-      fields: [exerciseSupersets.workout_id],
+      fields: [exerciseSupersets.workoutId],
       references: [workouts.id],
     }),
-    exercise_a: one(exercises, {
+    exerciseA: one(exercises, {
       fields: [exerciseSupersets.exercise_a_id],
       references: [exercises.id],
       relationName: "exercise_a",
     }),
-    exercise_b: one(exercises, {
+    exerciseB: one(exercises, {
       fields: [exerciseSupersets.exercise_b_id],
       references: [exercises.id],
       relationName: "exercise_b",
